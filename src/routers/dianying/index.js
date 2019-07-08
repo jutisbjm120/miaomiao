@@ -6,6 +6,6 @@ export default{
         {path:'dianzheng',component:()=>import('@/views/dianzheng')},
         {path:'dianjijiang',component:()=>import('@/views/dianjijiang')},
         {path:'dianserch',component:()=>import('@/views/dianserch')},
-        {path:'/dianying',component:()=>import('@/views/dianserch')},
+        {path:'/dianying',component:()=>import('@/views/dianzheng')},
     ]
 }
