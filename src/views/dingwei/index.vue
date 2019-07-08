@@ -1,129 +1,161 @@
 <template>
-  <div class="cinema_body">
-    <ul>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
+  <div class="city_body">
+    <div class="city_list">
+      <div class="city_hot" >
+        <h2 >热门城市</h2>
+        <ul class="clearfix">
+          <li v-for="item in houtlist" :key="item.index">{{item.nm}}</li>
+        </ul>
+      </div>
+      <div class="city_sort">
+        <div v-for="item in newarr" :key="item.index">
+          <h2 ref="seaty">{{item.index}}</h2>
+          <ul>
+            <li v-for="itemlist in item.list" :key="itemlist.id">{{itemlist.nm}}</li>
+          </ul>
         </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <span>大地影院(澳东世纪店)</span>
-          <span class="q">
-            <span class="price">22.9</span> 元起
-          </span>
-        </div>
-        <div class="address">
-          <span>金州区大连经济技术开发区澳东世纪3层</span>
-          <span>1763.5km</span>
-        </div>
-        <div class="card">
-          <div>小吃</div>
-          <div>折扣卡</div>
-        </div>
-      </li>
-    </ul>
+      </div>
+    </div>
+    <div class="city_index">
+      <ul>
+        <li  v-for="(item,i) in newarr" :key="item.list.id" @click="chang(i)">{{item.index}}</li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      newarr:[],
+      houtlist:[]
+    };
   },
-  methods: {},
-  components: {}
+  methods: {
+    getDate(resouse) {
+      // [{index:'A',list:[{nm:'阿城',id:123}]}]
+      var houtlist = [];
+      var newarr = [];
+      //在newarr中和houtlist中追加数据添加数据
+      resouse.forEach((element, i) => {
+        if(element.isHot==1){
+          houtlist.push(element);
+        }
+        let firstzi = element.py.substring(0, 1).toUpperCase();
+        if (ispush(firstzi)) {
+          //如果在newarr中存在首字母的数组就追加
+          // this.newarr[i].list.push({})
+          for (var j = 0; j < newarr.length; j++) {//判断存在一样的index所在的数组
+            if (newarr[j].index == firstzi) {
+              newarr[j].list.push({ nm: element.nm, id: element.id });
+            }
+          }
+        } else {
+          //否则就添加新的数组
+          newarr.push({
+            index: firstzi,
+            list: [{ nm: element.nm, id: element.id }]
+          });
+        }
+      });
+      function ispush(firstzi) {//判断在newarr中是否存在一样的index
+        for (var i = 0; i < newarr.length; i++) {
+          if ((this, newarr[i].index == firstzi)) {
+            return true;
+          }
+        }
+        return false;
+      }
+      newarr= newarr.sort((a,b)=>{
+        if(a.index>b.index){
+          return 1
+        }else{
+          return -1
+        }
+      })
+      // console.log(newarr,houtlist);
+      return {newarr,houtlist}
+    },
+    chang(i){
+      var h2=this.$refs.seaty[i].offsetTop;
+      document.querySelector(".city_list").scrollTop=h2;
+    }
+  },
+  components: {},
+  mounted() {
+    this.$axios.get("/api/cityList").then(res => {
+      // console.log(res.data.data.cities);
+      if (res.data.msg == "ok") {
+        var {newarr,houtlist}= this.getDate(res.data.data.cities);
+        // console.log(newarr,houtlist);
+        this.newarr=newarr;
+        this.houtlist=houtlist;
+      }
+    });
+  }
 };
 </script>
 
 <style scoped>
-#content .cinema_menu{ width: 100%; height: 45px; border-bottom:1px solid #e6e6e6; display: flex; justify-content:space-around; align-items:center; background:white;}
-#content .cinema_body{ flex:1; overflow:auto;}
-.cinema_body ul{ padding:20px;}
-.cinema_body li{  border-bottom:1px solid #e6e6e6; margin-bottom: 20px;}
-.cinema_body div{ margin-bottom: 10px;}
-.cinema_body .q{ font-size: 11px; color:#f03d37;}
-.cinema_body .price{ font-size: 18px;}
-.cinema_body .address{ font-size: 13px; color:#666;}
-.cinema_body .address span:nth-of-type(2){ float:right; }
-.cinema_body .card{ display: flex;}
-.cinema_body .card div{ padding: 0 3px; height: 15px; line-height: 15px; border-radius: 2px; color: #f90; border: 1px solid #f90; font-size: 13px; margin-right: 5px;}
-.cinema_body .card div.or{ color: #f90; border: 1px solid #f90;}
-.cinema_body .card div.bl{ color: #589daf; border: 1px solid #589daf;}
-
+.city_body {
+  margin-top: 45px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.city_body .city_hot {
+  margin-top: 20px;
+}
+.city_body .city_hot h2 {
+  padding-left: 15px;
+  line-height: 30px;
+  font-size: 14px;
+  background: #f0f0f0;
+  font-weight: normal;
+}
+.city_body .city_hot ul li {
+  float: left;
+  background: #fff;
+  width: 29%;
+  height: 33px;
+  margin-top: 15px;
+  margin-left: 3%;
+  padding: 0 4px;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  line-height: 33px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.city_body .city_sort div {
+  margin-top: 20px;
+}
+.city_body .city_sort h2 {
+  padding-left: 15px;
+  line-height: 30px;
+  font-size: 14px;
+  background: #f0f0f0;
+  font-weight: normal;
+}
+.city_body .city_sort ul {
+  padding-left: 10px;
+  margin-top: 10px;
+}
+.city_body .city_sort ul li {
+  line-height: 30px;
+  line-height: 30px;
+}
+.city_body .city_index {
+  width: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border-left: 1px #e6e6e6 solid;
+}
 </style>
